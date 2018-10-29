@@ -1,0 +1,89 @@
+<html>
+<head></head>
+<body>
+<div>
+<h2><a name="Gera_o_autom_tica_do_script"></a> Geração automática do script </h2>
+
+<p>
+Obs.: Não é feito a criação da General Parameter para Store_id='GLOBAL'
+</p>
+
+<p>
+</p>
+
+<p>
+<script>
+
+var PROC_TEMPLATE = `SET SERVEROUTPUT ON;
+begin
+  ecad_gp_ins_upd_all_stores(
+    p_gp_id => '{GP_ID}',
+    p_gp_value => '{GP_VALUE}',
+    p_gp_description => '{GP_DESCRIPTION}',
+    p_gp_group_id => 0,
+    p_gp_value_type => '{GP_TYPE}',
+    p_gp_value_list => '{GP_LIST}',
+    p_gp_update_if_exists => {GP_UPDATE}
+  );
+END;
+/
+`;
+
+function downloadFile(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
+
+function download() {
+   var today = new Date().toISOString().slice(0,10);
+   var listOrText = document.querySelector('input[name="group4"]:checked').value;
+   var listValue = document.getElementById("c-4-3").value;
+   if (listOrText == 'S' || listOrText == 'J' ) {listValue = '';}
+   var insertOrUpdate = document.querySelector('input[name="group7"]:checked').value == 'true' ? 'INSERT_UPDATE' : 'INSERT';
+   var fileName = today + "-1-AD-AC_ADMIN-"+insertOrUpdate+"_ECAD_GENERAL_PARAMETER_"+document.getElementById("c-0-11").value+".sql";
+   console.log(fileName);
+   var fileContent = PROC_TEMPLATE
+      .replace('{GP_ID}',document.getElementById("c-0-11").value)
+      .replace('{GP_DESCRIPTION}',document.getElementById("c-1-10").value)
+      .replace('{GP_VALUE}',document.getElementById("c-5-2").value)
+      .replace('{GP_UPDATE}', document.querySelector('input[name="group7"]:checked').value)
+      .replace('{GP_TYPE}', listOrText)
+      .replace('{GP_LIST}',listValue);
+   //DOWNLOAD 
+   downloadFile(fileName,fileContent);
+}
+
+</script>
+</p><p>
+</p><form action="javascript:void(0)">
+   <label for="c-2-8"><input type="radio" name="group7" id="c-2-8" checked="checked" value="false"><span>Insert only</span></label>
+   <label for="c-2-8"><input type="radio" name="group7" id="c-2-8" value="true"><span>Insert and update</span></label>
+   <br><br><label for="c-0-11">General Parameter Id</label>
+   <br><input type="text" id="c-0-11">
+   <br><br> <label for="c-1-10">Description</label>
+   <br><textarea id="c-1-10" type="text" cols="50" rows="3"></textarea>
+   <br>
+   <label for="c-3-5"><input type="radio" name="group4" id="c-3-5" checked="checked" value="L" onclick="document.getElementById('valueListDiv').style.display='block'"><span>Use value list</span></label>
+   <label for="c-3-6"><input type="radio" name="group4" id="c-3-6" value="S" onclick="document.getElementById('valueListDiv').style.display='none'"><span>Free text</span></label>
+   <label for="c-3-7"><input type="radio" name="group4" id="c-3-7" value="J" onclick="document.getElementById('valueListDiv').style.display='none'"><span>Json format</span></label>
+<p>
+</p><div id="valueListDiv">
+   <br><label for="c-4-3">Value list</label>
+   <br><textarea id="c-4-3" type="text" cols="50" rows="3">true#Habilitado|false#Desabilitado</textarea>
+</div>
+<p>
+   <br><label for="c-5-2">Value</label>
+   <br><textarea id="c-5-2" type="text" cols="50" rows="3">false</textarea>
+   <br><br>
+   <button onclick="download()">Generate file</button>
+</p></form>
+<p>
+</p></div></div>
+</div>
+</body>
+</html>
