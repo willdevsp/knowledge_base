@@ -18,10 +18,10 @@ Agrupamento de produtos é a variação de um  mesmo produto, por exemplo caixas
  ## Mudanças importantes
 Devido o catálogo conter uma semelhança do itens do carrinho, será possível enviar a quantidade 0 *(zero)* para o carrinho, fazendo que se o produto já existir no carrinho ele será removido, caso não tenho, não irá fazer nada. 
 Para esse comportamento funcionar será necessário ativar a GP 'CKOUT_FORCE_SEND_ZERO_TO_CART'
-mais informações de GP aqui em [GPS](#GeneralConfigs)
+mais informações de GP aqui em [General Configs](#general-configs)
 
 
-## GeneralConfigs
+## General Configs
 
     CKOUT_FORCE_SEND_ZERO_TO_CART
 
